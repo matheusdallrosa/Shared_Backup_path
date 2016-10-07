@@ -10,6 +10,9 @@ import com.net2plan.interfaces.simulation.SimEvent;
 import com.net2plan.utils.Triple;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -22,11 +25,20 @@ import com.net2plan.utils.DoubleUtils;
 
 class Aresta{
 	double largura;
-	Vertice dest;
-	public Aresta(Vertice _dest,double _larg){
+	Vertice src,dest;
+	public Aresta(Vertice _src,Vertice _dest,double _larg){
+		src = _src;
 		dest = _dest;
 		largura = _larg;
 	}
+}
+
+class CMP_Aresta implements Comparator<Aresta>{
+	public int compare(Aresta a1, Aresta a2){
+		if(a1.largura < a2.largura) return 1;
+		if(a1.largura > a2.largura) return -1;
+		return 0;
+    }
 }
 
 class Vertice{
@@ -37,6 +49,10 @@ class Vertice{
 		r = _r;
 		dist = _dist;
 	}
+}
+
+class Rotas{
+	
 }
 
 public class RSAPrimaryPath implements IAlgorithm{	
@@ -59,7 +75,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 				int rv = rand.nextInt(100)+1;
 				if(rv > p){
 					int ra = rand.nextInt(4); 
-					src.viz.add(new Aresta(dest,largura[ra]));
+					src.viz.add(new Aresta(src,dest,largura[ra]));
 				}
 			}
 		}		
@@ -82,6 +98,19 @@ public class RSAPrimaryPath implements IAlgorithm{
 		return false;
 	}
 	
+	public List<Rotas> RSA(List<Vertice> VON){
+		List<Aresta> arestas = new ArrayList<>();
+		for (Vertice v : VON) 
+			for (Aresta e : v.viz) 
+				arestas.add(e);		
+		Collections.sort(arestas, new CMP_Aresta());
+		for (Aresta aresta : arestas) {
+			//verificar se tem caminho de aresta.src para aresta.dest;
+			
+		}
+		return null;
+	}
+	
 	final static int REQ_AMOUNT = 3;
 	public String executeAlgorithm(NetPlan net, Map algorithmParameters, Map net2planParameters) {		
 		List<Node> nodes = net.getNodes();
@@ -89,10 +118,12 @@ public class RSAPrimaryPath implements IAlgorithm{
 		Random rand = new Random();
 		for (Node node : nodes)			
 			verFis.add(new Vertice(node.getIndex(),20,0));
-		List<List<Vertice>> requestsVON = new ArrayList<>();
-		for(int i = 0; i < REQ_AMOUNT; i++)
-			requestsVON.add(nextVon());
 		
+		//List<List<Vertice>> requestsVON = new ArrayList<>();
+		for(int i = 0; i < REQ_AMOUNT; i++){
+			List<Vertice> von = nextVon();
+			RSA(von);
+		}
 		return null;
 	}
 }
