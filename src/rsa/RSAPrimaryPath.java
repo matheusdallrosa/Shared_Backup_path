@@ -38,8 +38,8 @@ class Aresta{
 	boolean checarSlots(int n){
 		for(int i = 0; i < fs.length-n; i++){
 			boolean valido = true;
-			for(int j = i; j < n && valido; j++)
-				if(fs[j] != -1) valido = false;			
+			for(int j = 0; j < n && valido; j++)
+				if(fs[i+j] != -1) valido = false;			
 			if(valido) return true;
 		}
 		return false;
