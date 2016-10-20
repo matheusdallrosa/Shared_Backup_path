@@ -35,6 +35,7 @@ class Aresta{
 		fs = new int[401];
 		for(int i = 0; i < fs.length; i++) fs[i] = -1;//slot nao utilizado.		
 	}
+	
 	boolean checarSlots(int n){
 		for(int i = 0; i < fs.length-n; i++){
 			boolean valido = true;
@@ -65,11 +66,8 @@ class Vertice{
 	}
 }
 
-class Rotas{
-	
-}
-
 class Config{
+	public final static int INF = 112345;
 	public final static int PROBABILIDADE_ARESTA = 50; //percentual.
 	public final static int B = 400;
 	//capacidade em Gb/s e distância em KM.
@@ -99,6 +97,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 		Random rand = new Random();
 		List<Vertice> grafo = new ArrayList<>();
 		double largura[] = {12.5,25,50,100};
+		//testar todos os pares.		
 		for (Vertice src : nodes) {
 			for (Vertice dest : nodes) {
 				if(src.id == dest.id) continue;
@@ -129,9 +128,28 @@ public class RSAPrimaryPath implements IAlgorithm{
 	}
 	
 	boolean dijkstra(NetPlan net,int src,int dest,int largura,int pai[]){		
-		//calcular a menor rota de src e dest respeitando a largura de banda.	
-		for (int i = 0; i < net.getNumberOfNodes(); i++) pai[i] = -1;
-		
+		//calcular a menor rota de src e dest respeitando a largura de banda.
+		int []dist = new int[net.getNumberOfNodes()];
+		boolean []vis = new boolean[net.getNumberOfNodes()];
+		for (int i = 0; i < net.getNumberOfNodes(); i++){
+			pai[i] = -1;
+			vis[i] = false;
+			dist[i] = Config.INF;
+		}
+		dist[src] = 0;
+		for(int k = 0; k < net.getNumberOfNodes(); k++){
+			int v = -1;
+			int mn = Config.INF;			
+			for(int i = 0; i < net.getNumberOfNodes(); i++){
+				if(dist[i] < mn && !vis[i]){
+					v = i;
+					mn = dist[i];
+				}
+			}
+			if(v == -1) break;
+			vis[v] = true;
+			
+		}
 		return false;
 	}
 	
@@ -144,6 +162,10 @@ public class RSAPrimaryPath implements IAlgorithm{
 		int pai[] = new int[net.getNumberOfNodes()];
 		//ordenar as arestas pela largura.
 		Collections.sort(arestas, new CMP_Aresta());
+		List<Link> links = net.getLinks(null);
+		for (Link link : links) {
+			
+		}
 		for (Aresta aresta : arestas) {
 			//será testado para todas as modulacoes
 			for (int i = 0; i < Config.MODULACAO.length; i++) {
