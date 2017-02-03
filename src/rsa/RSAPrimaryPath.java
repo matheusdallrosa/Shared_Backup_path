@@ -75,20 +75,20 @@ public class RSAPrimaryPath implements IAlgorithm{
 		List<Aresta> arestas = new ArrayList<>();		
 		for (Vertice v : VON) 
 			for (Aresta e : v.viz)
-				arestas.add(e);		
+				if(e.src.id < e.dest.id)
+					arestas.add(e);		
 		//ordenar as arestas pela largura.
 		Collections.sort(arestas, new CMP_Aresta());
 		
-		boolean []gone = new boolean[VON.size()*2];
 		List<List<Integer>> rotas = new ArrayList<>();		
 		Aresta pai[] = new Aresta[net.getNumberOfNodes()];		
 		for (Aresta aresta : arestas) {
-			if(gone[aresta.src.id] && gone[aresta.dest.id]) continue;
+			
 			//será testado para todas as modulacoes
 			for (int i = 0; i < Config.MODULACAO.length; i++) {
 				
 				//calculo da tamanho da janela.
-				int n = (int)Math.ceil( aresta.largura / (Config.MODULACAO[i][0] * Config.B) );
+				int n = (int)Math.ceil( aresta.largura / Config.MODULACAO[i][0] );
 				System.out.println("Janela: " + n);
 				//verificar se tem caminho de aresta.src para aresta.dest;
 				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai)){
@@ -98,13 +98,13 @@ public class RSAPrimaryPath implements IAlgorithm{
 					for(int k = aresta.dest.id; k != -1; k = pai[k].src.id){
 						System.out.print(k + " ");
 						caminho.add(k);
-						pai[k].slotAllocation(n);
+						pai[k].slotAllocation(n);					
+						System.out.println();
 					}
 					System.out.println();
 					rotas.add(caminho);
 				}
 			}
-			gone[aresta.src.id] = gone[aresta.dest.id] = true;
 		}
 		return rotas;
 	}
@@ -114,16 +114,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 		List<Node> nodes = net.getNodes();
 		List<Vertice> verFis = new ArrayList<>();
 	 	NetworkLayer layer = net.getNetworkLayerDefault();
-		for (Node u : nodes){
-			Vertice vu = new Vertice(u.getIndex(),20);
-			
-			for(Link out : u.getOutgoingLinks(layer)){
-				Vertice vv = new Vertice(out.getDestinationNode().getIndex(),20);
-				vu.viz.add(new Aresta(vu,vv,-1.0,out.getLengthInKm()));
-			}
-			
-			verFis.add(vu);
-		}	
+
 		
 		VON vonGenerator = new VON();		
 		for(int i = 0; i < REQ_AMOUNT; i++){
