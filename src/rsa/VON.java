@@ -11,21 +11,23 @@ public class VON {
 	 * */
 	public List<Vertice> sortAresta(List<Vertice> nodes,int p){
 		Random rand = new Random();
-		List<Vertice> grafo = new ArrayList<>();
 		double largura[] = {12.5,25,50,100};
 		//testar todos os pares.		
-		for (Vertice src : nodes) {
-			for (Vertice dest : nodes) {
+		for(int i = 0; i < nodes.size(); i++) {
+			Vertice src = nodes.get(i);
+			for(int j = i+1; j < nodes.size(); j++){
+				Vertice dest = nodes.get(j);
 				if(src.id == dest.id) continue;
 				int rv = rand.nextInt(100)+1;
 				//caso a probabilidade desta aresta for maior do que PROBABILIDADE_ARESTA.
 				if(rv > p){
 					int ra = rand.nextInt(4); 
 					src.viz.add(new Aresta(src,dest,largura[ra],0.));
+					dest.viz.add(new Aresta(dest,src,largura[ra],0.));
 				}
 			}
 		}		
-		return grafo;
+		return nodes;
 	}
 	
 	/*
@@ -36,10 +38,10 @@ public class VON {
 		Random rand = new Random();
 		int nodos = (rand.nextInt() % 2 == 0) ? 3 : 4;
 		
-		List<Vertice> nodes = new ArrayList<>();
+		List<Vertice> vertices = new ArrayList<>();
 		for(int i = 0; i < nodos; i++)
-			nodes.add(new Vertice(i,(rand.nextInt() % 2 == 0) ? 2 : 4));		
+			vertices.add(new Vertice(i,(rand.nextInt() % 2 == 0) ? 2 : 4));		
 		
-		return sortAresta(nodes,Config.PROBABILIDADE_ARESTA);
+		return sortAresta(vertices,Config.PROBABILIDADE_ARESTA);
 	}
 }

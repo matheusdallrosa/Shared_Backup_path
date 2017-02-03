@@ -31,7 +31,7 @@ class Aresta{
 			boolean valido = true;
 			for(int j = 0; j < n && valido; j++)
 				if(fs[i+j] != -1) valido = false;			
-			if(valido){
+			if(valido){				
 				for(int j = 0; j < n; j++) fs[i+j] = 0;
 				break;
 			}

@@ -3,6 +3,7 @@ package rsa;
 import com.net2plan.interfaces.networkDesign.IAlgorithm;
 import com.net2plan.interfaces.networkDesign.Link; 
 import com.net2plan.interfaces.networkDesign.NetPlan;
+import com.net2plan.interfaces.networkDesign.NetworkLayer;
 import com.net2plan.interfaces.networkDesign.Node;
 import com.net2plan.interfaces.simulation.IEventProcessor;
 //import com.net2plan.interfaces.simulation.SimAction;
@@ -59,7 +60,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 			vis[v.id] = true;
 			for(Aresta e : v.viz){
 				Vertice u = e.dest;
-				if(e.checarSlots(slots) && dist[u.id] > mn+e.distKM){
+				if(e.checarSlots(slots) && dist[u.id] > mn+e.distKM){					
 					dist[u.id] = mn+e.distKM;
 					pai[u.id] = e;
 				} 
@@ -101,25 +102,46 @@ public class RSAPrimaryPath implements IAlgorithm{
 		return rotas;
 	}
 	
-	final static int REQ_AMOUNT = 3;
+	final static int REQ_AMOUNT = 1;
 	public String executeAlgorithm(NetPlan net, Map algorithmParameters, Map net2planParameters) {		
 		List<Node> nodes = net.getNodes();
-		List<Vertice> verFis = new ArrayList<>();		
+		List<Vertice> verFis = new ArrayList<>();
+	 	NetworkLayer layer = net.getNetworkLayerDefault();
 		for (Node u : nodes){
 			Vertice vu = new Vertice(u.getIndex(),20);
 			
-			for(Link out : u.getOutgoingLinks(null)){
+			for(Link out : u.getOutgoingLinks(layer)){
 				Vertice vv = new Vertice(out.getDestinationNode().getIndex(),20);
 				vu.viz.add(new Aresta(vu,vv,-1.0,out.getLengthInKm()));
 			}
 			
 			verFis.add(vu);
 		}		
-		VON vonGenerator = new VON();
-		//List<List<Vertice>> requestsVON = new ArrayList<>();
+		VON vonGenerator = new VON();		
 		for(int i = 0; i < REQ_AMOUNT; i++){
 			List<Vertice> von = vonGenerator.nextVon();
+			System.out.println("Von: quantia de nodos: " + von.size());
+			for(Vertice v : von){
+				System.out.print(v.id + ": ");
+				for(Aresta e : v.viz){
+					System.out.print("Vizinho: " + e.dest.id + " | Largura: " + e.largura + " - ");
+				}
+				System.out.println();
+			}
+			System.out.println();
 			RSA(von,verFis,net);
+			for(Vertice v : von){
+				System.out.print(v.id + ": ");
+				for(Aresta e : v.viz){
+					System.out.print("Vizinho: " + e.dest.id + " ");
+					int tot = 0;
+					for(int s = 0; s < e.fs.length; s++)
+						if(e.fs[s] != -1) tot++;
+					System.out.print("Slots: " + tot + " | ");
+				}
+				System.out.println();
+			}
+			System.out.println();
 		}
 		return null;
 	}
