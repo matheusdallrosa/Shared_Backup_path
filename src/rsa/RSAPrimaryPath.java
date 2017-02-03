@@ -99,7 +99,6 @@ public class RSAPrimaryPath implements IAlgorithm{
 						System.out.print(k + " ");
 						caminho.add(k);
 						pai[k].slotAllocation(n);					
-						System.out.println();
 					}
 					System.out.println();
 					rotas.add(caminho);
@@ -110,12 +109,34 @@ public class RSAPrimaryPath implements IAlgorithm{
 	}
 	
 	final static int REQ_AMOUNT = 1;
-	public String executeAlgorithm(NetPlan net, Map algorithmParameters, Map net2planParameters) {		
+	public String executeAlgorithm(NetPlan net, Map algorithmParameters, Map net2planParameters) {
+		/*
+		 * Criando grafo da rede física.
+		 * */
 		List<Node> nodes = net.getNodes();
 		List<Vertice> verFis = new ArrayList<>();
 	 	NetworkLayer layer = net.getNetworkLayerDefault();
-
+	 	for (Node u : nodes) verFis.add(new Vertice(u.getIndex(),20));	 	
 		
+	 	for (Node u : nodes){
+	 		for(Link out : u.getOutgoingLinks(layer)){
+	 			Node v = out.getDestinationNode();
+	 			if(u.getIndex() < v.getIndex()){
+	 				Vertice vu = verFis.get(u.getIndex());
+	 				Vertice vv = verFis.get(v.getIndex());
+	 				
+	 				Aresta e = new Aresta(vu,vv,0,out.getLengthInKm());
+	 				vu.viz.add(e);
+	 				
+	 				Aresta e2 = new Aresta(vv,vu,0,out.getLengthInKm());
+	 				e2.fs = e.fs;
+	 				vv.viz.add(e2);
+	 			}		 		
+	 		}
+	 	}
+	 	/*
+	 	 * Gerando novas VONs e computando os caminhos primários.
+	 	 * */
 		VON vonGenerator = new VON();		
 		for(int i = 0; i < REQ_AMOUNT; i++){
 			List<Vertice> von = vonGenerator.nextVon();
@@ -128,6 +149,9 @@ public class RSAPrimaryPath implements IAlgorithm{
 				System.out.println();
 			}
 			System.out.println();
+			/*
+			 * Computar os caminhos primários nessa VON.
+			 * */
 			RSA(von,verFis,net);
 			for(Vertice v : verFis){
 				System.out.print(v.id + ": ");
@@ -142,6 +166,6 @@ public class RSAPrimaryPath implements IAlgorithm{
 			}
 			System.out.println();
 		}
-		return null;
+		return "Algoritmo executado corretamente.";
 	}
 }
