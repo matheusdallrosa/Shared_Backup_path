@@ -26,7 +26,7 @@ class Aresta{
 		return false;
 	}
 	
-	void slotAllocation(int n){
+	void slotAllocation(int n){		
 		for(int i = 0; i < fs.length-n; i++){
 			boolean valido = true;
 			for(int j = 0; j < n && valido; j++)

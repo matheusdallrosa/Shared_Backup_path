@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +45,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 		for (int i = 0; i < verFis.size(); i++){			
 			vis[i] = false;
 			dist[i] = Config.INF;
+			pai[i] = new Aresta(new Vertice(-1,0),new Vertice(-1,0),0.,0.);			 
 		}
 		//distancia para raiz = 0
 		dist[src] = 0;
@@ -66,38 +68,43 @@ public class RSAPrimaryPath implements IAlgorithm{
 				} 
 			}
 		}
-		return false;
+		return dist[dest] != Config.INF;
 	}
 	
 	public List<List<Integer>> RSA(List<Vertice> VON,List<Vertice> verFis,NetPlan net){
-		List<Aresta> arestas = new ArrayList<>();
+		List<Aresta> arestas = new ArrayList<>();		
 		for (Vertice v : VON) 
-			for (Aresta e : v.viz) 
-				arestas.add(e);	
+			for (Aresta e : v.viz)
+				arestas.add(e);		
 		//ordenar as arestas pela largura.
 		Collections.sort(arestas, new CMP_Aresta());
 		
+		boolean []gone = new boolean[VON.size()*2];
 		List<List<Integer>> rotas = new ArrayList<>();		
 		Aresta pai[] = new Aresta[net.getNumberOfNodes()];		
 		for (Aresta aresta : arestas) {
+			if(gone[aresta.src.id] && gone[aresta.dest.id]) continue;
 			//será testado para todas as modulacoes
 			for (int i = 0; i < Config.MODULACAO.length; i++) {
 				
 				//calculo da tamanho da janela.
-				int n = (int)(aresta.largura/(Config.MODULACAO[i][0]*Config.B));
-				
+				int n = (int)Math.ceil( aresta.largura / (Config.MODULACAO[i][0] * Config.B) );
+				System.out.println("Janela: " + n);
 				//verificar se tem caminho de aresta.src para aresta.dest;
 				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai)){
 					List<Integer> caminho = new ArrayList<>();
-					
+					System.out.print("Conseguiu caminho.");
 					//guardar a rota encontrada pelo dijkstra.
 					for(int k = aresta.dest.id; k != -1; k = pai[k].src.id){
+						System.out.print(k + " ");
 						caminho.add(k);
 						pai[k].slotAllocation(n);
 					}
+					System.out.println();
 					rotas.add(caminho);
 				}
 			}
+			gone[aresta.src.id] = gone[aresta.dest.id] = true;
 		}
 		return rotas;
 	}
@@ -116,7 +123,8 @@ public class RSAPrimaryPath implements IAlgorithm{
 			}
 			
 			verFis.add(vu);
-		}		
+		}	
+		
 		VON vonGenerator = new VON();		
 		for(int i = 0; i < REQ_AMOUNT; i++){
 			List<Vertice> von = vonGenerator.nextVon();
@@ -130,7 +138,7 @@ public class RSAPrimaryPath implements IAlgorithm{
 			}
 			System.out.println();
 			RSA(von,verFis,net);
-			for(Vertice v : von){
+			for(Vertice v : verFis){
 				System.out.print(v.id + ": ");
 				for(Aresta e : v.viz){
 					System.out.print("Vizinho: " + e.dest.id + " ");
