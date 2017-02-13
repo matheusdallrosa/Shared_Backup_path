@@ -11,4 +11,5 @@ class Config{
 	public final static double MODULACAO[][] = {{12.5,4000}, //BPSK
 												{25,2000},   //QPSK
 												{37.5,1000}};//8QAM
+	public final static int REQ_AMOUNT = 3;
 }

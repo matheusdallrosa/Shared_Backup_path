@@ -2,12 +2,14 @@ package rsa;
 
 import java.util.Comparator;
 
-class Aresta{
+public class Aresta{
 	int fs[];
+	int sharingNodes;
 	double largura,distKM;
 	Vertice src,dest;
 	
-	public Aresta(Vertice _src,Vertice _dest,double _larg,double _distKM){		
+	public Aresta(Vertice _src,Vertice _dest,double _larg,double _distKM){
+		sharingNodes = 0;
 		src = _src;
 		dest = _dest;
 		distKM = _distKM;
@@ -26,13 +28,13 @@ class Aresta{
 		return false;
 	}
 	
-	void slotAllocation(int n){		
+	void slotAllocation(int n, int type){		
 		for(int i = 0; i < fs.length-n; i++){
 			boolean valido = true;
 			for(int j = 0; j < n && valido; j++)
 				if(fs[i+j] != -1) valido = false;			
 			if(valido){				
-				for(int j = 0; j < n; j++) fs[i+j] = 0;
+				for(int j = 0; j < n; j++) fs[i+j] = type;
 				break;
 			}
 		}
