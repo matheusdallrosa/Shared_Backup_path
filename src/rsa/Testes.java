@@ -66,6 +66,7 @@ public class Testes implements IAlgorithm {
 	 			}		 		
 	 		}
 	 	}
+
 		
 		for(int i = 0; i < Config.REQ_AMOUNT; i++){
 			von.add(vonGenerator.nextVon());
@@ -77,23 +78,22 @@ public class Testes implements IAlgorithm {
 	
 		int sumP = 0;
 		int sumS = 0;
+		int emptyS = 0;
 		
 		for(Vertice v : verFis){
-			System.out.print(v.id + ": ");
 			for(Aresta e : v.viz){
-				System.out.print("Vizinho: " + e.dest.id + " ");
-				int tot = 0;
 				for(int s = 0; s < e.fs.length; s++){
-					if(e.fs[s] != -1) tot++;
-					if(e.fs[s] == 1) sumS++;
+					if(e.fs[s] == 0) sumP++;
+					else if(e.fs[s] == 1) sumS++;
+					else emptyS++;
 				}
-				sumP+=tot;
-				System.out.print("Slots: " + tot + " | ");
 			}
-			System.out.println();
 		}
-		System.out.println("Slots de backup: " + sumS/2);
-		System.out.println("Primarios: " + sumP/2);
+		
+		/*quantidade de vons, probabilidade de conexão, quantidade de espectro utilizado por caminhos de backup, quantidade de espectro consumido por primarios
+		 * quantidade de espectro não utilizado
+		 */
+		System.out.println(Config.REQ_AMOUNT + ", " + Config.PROBABILIDADE_ARESTA + ", " + sumS/2 + ", " + sumP/2 + ", " + emptyS/2);
 		
 		return "Algoritmo executado corretamente.";
 	}

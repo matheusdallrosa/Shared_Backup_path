@@ -30,7 +30,7 @@ public class RSAPrimaryPath {
 
 	
 	
-	boolean dijkstra(List<Vertice> verFis,int src,int dest,int slots,Aresta pai[]){		
+	boolean dijkstra(List<Vertice> verFis,int src,int dest,int slots,Aresta pai[], int modulacao){		
 		//calcular a menor rota de src e dest respeitando a largura de banda.
 		double []dist = new double[verFis.size()];
 		boolean []vis = new boolean[verFis.size()];
@@ -55,7 +55,7 @@ public class RSAPrimaryPath {
 			vis[v.id] = true;
 			for(Aresta e : v.viz){
 				Vertice u = e.dest;
-				if(e.checarSlots(slots) && dist[u.id] > mn+e.distKM){					
+				if(e.checarSlots(slots) && dist[u.id] > mn+e.distKM && e.distKM <= Config.MODULACAO[modulacao][1]){					
 					dist[u.id] = mn+e.distKM;
 					pai[u.id] = e;
 				} 
@@ -85,7 +85,7 @@ public class RSAPrimaryPath {
 				int n = (int)Math.ceil( aresta.largura / Config.MODULACAO[i][0] );
 				//System.out.println("Janela: " + n);
 				//verificar se tem caminho de aresta.src para aresta.dest;
-				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai)){
+				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai, i)){
 					List<Integer> caminho = new ArrayList<>();
 					//System.out.print("Conseguiu caminho.");
 					//guardar a rota encontrada pelo dijkstra.

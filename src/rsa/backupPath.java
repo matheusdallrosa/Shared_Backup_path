@@ -25,17 +25,10 @@ import com.net2plan.interfaces.networkDesign.Net2PlanException;
 import com.net2plan.libraries.WDMUtils.ModulationFormat;
 import com.net2plan.utils.DoubleUtils; 
 
-/*criar classe para criar as vons*/
-/*gerar dados para os gráficos(csv):
- * consumo de espectro
- * consumo de recursos de backup
- * quantida de recursos dos nodos
- * */
-
 
 public class backupPath {
 
-	boolean dijkstra(List<Vertice> verFis,int src,int dest,int slots,Aresta pai[]){		
+	boolean dijkstra(List<Vertice> verFis,int src,int dest,int slots,Aresta pai[], int modulacao){		
 		//calcular a menor rota de src e dest respeitando a largura de banda.
 		double []cost= new double[verFis.size()];
 		boolean []vis = new boolean[verFis.size()];
@@ -62,7 +55,7 @@ public class backupPath {
 				Vertice u = e.dest;
 				/*mudar o custo*/
 				double eCost = (e.sharingNodes > 0) ? (1/(e.sharingNodes)) : 1;
-				if(e.checarSlots(slots) && cost[u.id] > mn+eCost){					
+				if(e.checarSlots(slots) && cost[u.id] > mn+eCost && e.distKM <= Config.MODULACAO[modulacao][1]){					
 					cost[u.id] = mn+eCost;
 					pai[u.id] = e;
 				} 
@@ -94,7 +87,7 @@ public class backupPath {
 				//calculo da tamanho da janela.
 				int n = (int)Math.ceil( aresta.largura / Config.MODULACAO[i][0] );
 				//verificar se tem caminho de aresta.src para aresta.dest;
-				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai)){
+				if(dijkstra(verFis,aresta.src.id,aresta.dest.id,n,pai,i)){
 					List<Integer> caminho = new ArrayList<>();
 					//guardar a rota encontrada pelo dijkstra.
 					for(int k = aresta.dest.id; k != -1; k = pai[k].src.id){
