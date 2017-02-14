@@ -2,7 +2,7 @@ package rsa;
 
 class Config{
 	public final static int INF = 112345;
-	public final static int PROBABILIDADE_ARESTA = 50; //percentual.
+	public static int PROBABILIDADE_ARESTA; //percentual.
 	public final static int B = 400;
 	//capacidade em Gb/s e distância em KM.
 	public final static int _BPSK = 0;

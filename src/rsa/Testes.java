@@ -17,7 +17,8 @@ public class Testes implements IAlgorithm {
 	
 	public List<Triple<String,String,String>>	 getParameters() {		
 		ArrayList<Triple<String,String,String>> params = new ArrayList<>();
-		params.add(new Triple<String,String,String>("VON","100","Quantidade de VONs", false));
+		params.add(new Triple<>("VON","100","Quantidade de VONs", false));
+		params.add(new Triple<>("prob","50","Probabilidade aresta",false));
 		return params;
 	}	
 	
@@ -25,6 +26,7 @@ public class Testes implements IAlgorithm {
 
 		try	{
 			Config.REQ_AMOUNT = Integer.valueOf(algorithmParameters.get("VON"));
+			Config.PROBABILIDADE_ARESTA = Integer.valueOf(algorithmParameters.get("prob"));
 		} catch(Exception e)	{
 			System.out.println("Erro: "+e.getMessage());
 		}
