@@ -1,4 +1,4 @@
-"VONrequests", "Probability", "BackupReservation", "PrimaryReservation", "FreeSpectrum"
+VON,prob,backup,primary,fp
 5, 50, 104, 104, 8213
 5, 50, 109, 109, 8203
 5, 50, 154, 154, 8113
