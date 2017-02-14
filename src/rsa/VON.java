@@ -20,7 +20,7 @@ public class VON {
 				if(src.id == dest.id) continue;
 				int rv = rand.nextInt(100)+1;
 				//caso a probabilidade desta aresta for maior do que PROBABILIDADE_ARESTA.
-				if(rv > p){
+				if(rv < p){
 					int ra = rand.nextInt(4); 
 					src.viz.add(new Aresta(src,dest,largura[ra],0.));
 					dest.viz.add(new Aresta(dest,src,largura[ra],0.));
