@@ -1,35 +1,11 @@
 package rsa;
 
-import com.net2plan.interfaces.networkDesign.IAlgorithm;
-import com.net2plan.interfaces.networkDesign.Link; 
 import com.net2plan.interfaces.networkDesign.NetPlan;
-import com.net2plan.interfaces.networkDesign.NetworkLayer;
-import com.net2plan.interfaces.networkDesign.Node;
-import com.net2plan.interfaces.simulation.IEventProcessor;
-//import com.net2plan.interfaces.simulation.SimAction;
-import com.net2plan.interfaces.simulation.SimEvent;
-import com.net2plan.utils.Triple;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import com.net2plan.interfaces.networkDesign.Net2PlanException;
-import com.net2plan.libraries.WDMUtils.ModulationFormat;
-import com.net2plan.utils.DoubleUtils; 
-
 
 public class RSAPrimaryPath {	
-
-	
-	
 	boolean dijkstra(List<Vertice> verFis,int src,int dest,int slots,Aresta pai[], int modulacao){		
 		//calcular a menor rota de src e dest respeitando a largura de banda.
 		double []dist = new double[verFis.size()];

@@ -1,48 +1,38 @@
 package rsa;
 
 import com.net2plan.interfaces.networkDesign.IAlgorithm;
-import com.net2plan.interfaces.networkDesign.Link; 
 import com.net2plan.interfaces.networkDesign.NetPlan;
 import com.net2plan.interfaces.networkDesign.NetworkLayer;
 import com.net2plan.interfaces.networkDesign.Node;
-import com.net2plan.interfaces.simulation.IEventProcessor;
-//import com.net2plan.interfaces.simulation.SimAction;
-import com.net2plan.interfaces.simulation.SimEvent;
+import com.net2plan.interfaces.networkDesign.Link;
 import com.net2plan.utils.Triple;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-
-import com.net2plan.interfaces.networkDesign.Net2PlanException;
-import com.net2plan.libraries.WDMUtils.ModulationFormat;
-import com.net2plan.utils.DoubleUtils; 
-
 
 public class Testes implements IAlgorithm {
-
-	
 	public String getDescription() {		
 		return "Algoritmo para computar os caminhos primários da rede.";
 	}
 	
-	public List getParameters() {		
-		return null;
+	public List<Triple<String,String,String>>	 getParameters() {		
+		ArrayList<Triple<String,String,String>> params = new ArrayList<>();
+		params.add(new Triple<String,String,String>("VON","100","Quantidade de VONs", false));
+		return params;
 	}	
 	
-	public String executeAlgorithm(NetPlan net, Map algorithmParameters, Map net2planParameters) {
+	public String executeAlgorithm(NetPlan net, Map<String,String> algorithmParameters, Map<String,String> net2planParameters) {
 
+		try	{
+			Config.REQ_AMOUNT = Integer.valueOf(algorithmParameters.get("VON"));
+		} catch(Exception e)	{
+			System.out.println("Erro: "+e.getMessage());
+		}
+		
 		List<Node> nodes = net.getNodes();
 		List<Vertice> verFis = new ArrayList<>();
 		VON vonGenerator = new VON();
-		backupPath vonBackup = new backupPath();
+		BackupPath vonBackup = new BackupPath();
 		RSAPrimaryPath pPath = new RSAPrimaryPath();
 		List<List<Vertice>> von = new ArrayList<>(Config.REQ_AMOUNT);
 		
